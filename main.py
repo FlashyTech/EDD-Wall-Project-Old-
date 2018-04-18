@@ -35,6 +35,10 @@ PWM = GPIO.PWM(pinPWM, freq)
 
 # Other Vars
 state = -1 # Should Start Retracted
+encoderPos = 0
+
+# Event detection for encoder
+GPIO.add_event_detect(Enc_A, GPIO.RISING, callback=encoder.rotation_decode)
 
 try:
     while True:
