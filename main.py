@@ -7,49 +7,48 @@ import threading
 import encoder
 import motor
 import button
+import pin
 
-# Init GPIO
-GPIO.setwarnings(True)
-GPIO.setmode(GPIO.BCM)
+def init():
+    # Init GPIO
+    GPIO.setwarnings(True)
+    GPIO.setmode(GPIO.BCM)
 
-# GPIO pin numbers using BCM numbering
-pinPWM = 18
-pinRev = 4
-pinEncA = 2
-pinEncB = 3
-pinBtnA = 23
-pinBtnB = 24
+    # Motor reverser
+    GPIO.setup(pin.Rev, GPIO.OUT)
 
-# Setup GPIO pins
-GPIO.setup(pinPWM, GPIO.OUT)
-GPIO.setup(pinRev, GPIO.OUT)
-GPIO.setup(pinEncA, GPIO.IN)
-GPIO.setup(pinEncB, GPIO.IN)
-GPIO.setup(pinBtnA, GPIO.IN)
-GPIO.setup(pinBtnB, GPIO.IN)
+    # Encoder pins
+    GPIO.setup(pin.EncA, GPIO.IN)
+    GPIO.setup(pin.EncB, GPIO.IN)
 
-# Setup PWM
-freq = 1 / 0.003
-DC = 25
-PWM = GPIO.PWM(pinPWM, freq)
+    # Inputs
+    GPIO.setup(pin.BtnA, GPIO.IN)
+    GPIO.setup(pin.BtnB, GPIO.IN)
+    
+    # Setup PWM
+    GPIO.setup(pin.PWM, GPIO.OUT)
+    PWM = GPIO.PWM(pin.PWM, motor.freq)
 
-# Other Vars
-state = -1 # Should Start Retracted
-encoderPos = 0
+    # Event detection for encoder
+    GPIO.add_event_detect(pin.EncA, GPIO.RISING, callback=encoder.rotation_decode)
 
-# Event detection for encoder
-GPIO.add_event_detect(Enc_A, GPIO.RISING, callback=encoder.rotation_decode)
+def main():
+    encoder.encoderPos = 0
+    init()
+    #while True:
+    #    inpt = int(input("Extend: 1\nRetract: -1\nEnter Input: "))
+    #    if inpt == 1 and state == -1:
+    #        state = 1
+    #        motor.extend()
+    #    elif inpt == -1 and state == 1:
+    #        state = -1
+    #        motor.retract()
+    #    else:
+    #        print("Invalid input or sheet is already at requested state")
+    while True:
+        pass
 
 try:
-    while True:
-        inpt = int(input("Extend: 1\nRetract: -1\nEnter Input: "))
-        if inpt == 1 and state == -1:
-            state = 1
-            motor.extend()
-        elif inpt == -1 and state == 1:
-            state = -1
-            motor.retract()
-        else:
-            print("Invalid input or sheet is already at requested state")
+    main()
 except KeyboardInterrupt:
     GPIO.cleanup()

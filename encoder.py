@@ -1,9 +1,15 @@
 
-def rotation_decode(pin_EncA):
-    global encoderPos
+import RPi.GPIO as GPIO
+import pin
 
-    BState = GPIO.input(pin_EncB)
+encoderPos = 0
+deployedState = False
+
+def rotation_decode(Edge): 
+    BState = GPIO.input(pin.EncB)
     if BState == 0:
         encoderPos += 1
+        print("Clockwise Rotation: ", encoderPos)
     if BState == 1:
         encoderPos -= 1
+        print("Counterclockwise Rotation: ", encoderPos)
