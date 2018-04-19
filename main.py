@@ -17,10 +17,6 @@ def init():
     # Motor reverser
     GPIO.setup(pin.Rev, GPIO.OUT)
 
-    # Encoder pins
-    GPIO.setup(pin.EncA, GPIO.IN)
-    GPIO.setup(pin.EncB, GPIO.IN)
-
     # Inputs
     GPIO.setup(pin.BtnA, GPIO.IN)
     GPIO.setup(pin.BtnB, GPIO.IN)
@@ -29,12 +25,9 @@ def init():
     GPIO.setup(pin.PWM, GPIO.OUT)
     PWM = GPIO.PWM(pin.PWM, motor.freq)
 
-    # Event detection for encoder
-    GPIO.add_event_detect(pin.EncA, GPIO.RISING, callback=encoder.rotation_decode)
-
 def main():
-    encoder.encoderPos = 0
     init()
+    encode = encoder.Encoder(pin.EncA, pin.EncB, 0)
     #while True:
     #    inpt = int(input("Extend: 1\nRetract: -1\nEnter Input: "))
     #    if inpt == 1 and state == -1:
